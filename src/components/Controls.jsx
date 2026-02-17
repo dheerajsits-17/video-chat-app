@@ -17,7 +17,7 @@ const Controls = ({ roomId, isMicMuted, isVideoOff, onToggleMic, onToggleVideo, 
       <div className="hidden md:flex items-center gap-3 pr-4 border-r border-white/10">
         <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter">Invite Link</span>
         <button onClick={copyToClipboard} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-1 rounded-full transition-all">
-          <span className="text-[10px] font-mono text-blue-400">Copy Link</span>
+          <span className="text-[10px] font-mono text-blue-400">Copy ID/Link</span>
           {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} className="text-zinc-400" />}
         </button>
       </div>

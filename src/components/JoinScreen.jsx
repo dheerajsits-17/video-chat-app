@@ -16,7 +16,7 @@ const JoinScreen = ({ isPrivate, setIsPrivate, startCall, inputRoomId, setInputR
         </div>
         <button onClick={() => {
           import("firebase/firestore").then(({doc, collection}) => {
-             // Logic remains same in parent startCall
+             
              startCall(null, true); 
           })
         }} className="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold mb-6 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3"><Zap size={20} fill="currentColor" /> Host New Meeting</button>

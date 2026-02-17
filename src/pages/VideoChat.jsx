@@ -116,11 +116,11 @@ const VideoChat = () => {
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-100 bg-zinc-900/90 border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 shadow-2xl backdrop-blur-md">
            <ShieldCheck size={14} className="text-blue-500" />
            <span className="text-[10px] md:text-xs font-mono text-blue-400 select-all">{webrtc.roomId}</span>
-           <button onClick={() => { 
+           {/* <button onClick={() => { 
              const fullLink = `${window.location.origin}/chat/${webrtc.roomId}`;
              navigator.clipboard.writeText(fullLink); 
              showNotification("Invite Link Copied!"); 
-           }} className="text-zinc-500 hover:text-white"><Smile size={12}/></button>
+           }} className="text-zinc-500 hover:text-white"><Smile size={12}/></button> */}
         </div>
       )}
 
