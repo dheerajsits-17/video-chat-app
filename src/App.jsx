@@ -10,6 +10,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/chat" element={<VideoChat />} />
+          {/* Ye line URL se ID uthane ke liye hai */}
+          <Route path="/chat/:id" element={<VideoChat />} />
         </Routes>
       </div>
     </Router>

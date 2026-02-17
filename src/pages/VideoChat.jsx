@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // New Import
 import { db } from "../firebase/config";
 import { collection, doc, onSnapshot, query, orderBy, serverTimestamp, addDoc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import Controls from "../components/Controls";
@@ -8,9 +9,10 @@ import { useWebRTC } from "../hooks/useWebRTC";
 import { ShieldCheck, Smile, AlertCircle, Info, MessageSquare, Maximize2, Minimize2, MicOff } from "lucide-react";
 
 const VideoChat = () => {
+  const { id } = useParams(); // URL se ID pakadna
   const myUserId = useRef("user_" + Math.random().toString(36).substring(7)).current;
   const [toast, setToast] = useState({ show: false, msg: "", type: "" });
-  const [inputRoomId, setInputRoomId] = useState("");
+  const [inputRoomId, setInputRoomId] = useState(id || ""); // Agar URL mein ID hai to default fill kar do
   const [isPrivate, setIsPrivate] = useState(true);
   const [isHostExpanded, setIsHostExpanded] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -26,8 +28,22 @@ const VideoChat = () => {
 
   const webrtc = useWebRTC(myUserId, showNotification);
 
+  // DEFAULT MUTE & VIDEO OFF LOGIC
   useEffect(() => {
-    if (webrtc.stream && localRef.current) localRef.current.srcObject = webrtc.stream;
+    if (webrtc.stream && localRef.current) {
+      localRef.current.srcObject = webrtc.stream;
+      
+      // Default Mic Off
+      webrtc.stream.getAudioTracks().forEach(track => track.enabled = false);
+      webrtc.setIsMicMuted(true);
+      
+      // Default Video Off
+      webrtc.stream.getVideoTracks().forEach(track => track.enabled = false);
+      webrtc.setIsVideoOff(true);
+      
+      // Notify signaling that we are muted/off
+      webrtc.updateMediaStatus(true, true, webrtc.roomId);
+    }
   }, [webrtc.stream]);
 
   useEffect(() => {
@@ -70,7 +86,6 @@ const VideoChat = () => {
       } else { webrtc.proceed(finalId, false, isPrivate); }
     } else { webrtc.proceed(finalId, true, isPrivate); }
 
-    // Listen for messages
     onSnapshot(query(collection(db, "calls", finalId, "messages"), orderBy("timestamp", "asc")), (snapshot) => {
       setMessages(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
     });
@@ -89,7 +104,7 @@ const VideoChat = () => {
   const leaveCall = async () => {
     if (webrtc.isHost) await updateDoc(doc(db, "calls", webrtc.roomId), { active: false });
     await deleteDoc(doc(db, "calls", webrtc.roomId, "participants", myUserId));
-    window.location.reload();
+    window.location.href = "/"; // Direct home page par redirect
   };
 
   return (
@@ -101,7 +116,11 @@ const VideoChat = () => {
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-100 bg-zinc-900/90 border border-white/10 px-4 py-2 rounded-full flex items-center gap-3 shadow-2xl backdrop-blur-md">
            <ShieldCheck size={14} className="text-blue-500" />
            <span className="text-[10px] md:text-xs font-mono text-blue-400 select-all">{webrtc.roomId}</span>
-           <button onClick={() => { navigator.clipboard.writeText(webrtc.roomId); showNotification("Copied!"); }} className="text-zinc-500 hover:text-white"><Smile size={12}/></button>
+           <button onClick={() => { 
+             const fullLink = `${window.location.origin}/chat/${webrtc.roomId}`;
+             navigator.clipboard.writeText(fullLink); 
+             showNotification("Invite Link Copied!"); 
+           }} className="text-zinc-500 hover:text-white"><Smile size={12}/></button>
         </div>
       )}
 

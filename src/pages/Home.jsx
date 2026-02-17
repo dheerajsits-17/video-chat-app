@@ -23,7 +23,7 @@ const Home = () => {
       </nav>
 
       <main className="max-w-6xl mx-auto px-6 pt-20 pb-12 text-center">
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-linear-to-b from-white to-zinc-500 bg-clip-text text-transparent">
           Connect instantly <br /> with anyone, anywhere.
         </h1>
 
